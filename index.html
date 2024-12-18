@@ -3,10 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Website</title>
+    <title>System Information</title>
 </head>
 <body>
-    <h1>Welcome to My GitHub Pages Website!</h1>
-    <p>This is my homepage.</p>
+    <h1>System Information</h1>
+    <p id="timestamp"></p>
+    <p id="european-time"></p>
+    <p id="media-info"></p>
+
+    <script>
+        // Function to get current timestamp
+        const getTimestamp = () => {
+            const timestamp = new Date();
+            document.getElementById('timestamp').textContent = `Local Time: ${timestamp.toString()}`;
+            return timestamp;
+        };
+
+        // Function to get European time (Central European Time)
+        const getEuropeanTime = (timestamp) => {
+            const europeanTime = timestamp.toLocaleString('en-GB', { timeZone: 'Europe/Paris' });
+            document.getElementById('european-time').textContent = `European Time (CET): ${europeanTime}`;
+        };
+
+        // Function to check for media devices (camera and audio)
+        const checkMediaDevices = () => {
+            navigator.mediaDevices.enumerateDevices()
+                .then(devices => {
+                    let cameraAvailable = false;
+                    let audioAvailable = false;
+
+                    devices.forEach(device => {
+                        if (device.kind === 'videoinput') {
+                            cameraAvailable = true;
+                        }
+                        if (device.kind === 'audioinput') {
+                            audioAvailable = true;
+                        }
+                    });
+
+                    let mediaInfo = 'No media devices found.';
+                    if (cameraAvailable && audioAvailable) {
+                        mediaInfo = 'Both camera and microphone are available.';
+                    } else if (cameraAvailable) {
+                        mediaInfo = 'Camera is available.';
+                    } else if (audioAvailable) {
+                        mediaInfo = 'Microphone is available.';
+                    }
+
+                    document.getElementById('media-info').textContent = mediaInfo;
+                })
+                .catch(error => {
+                    document.getElementById('media-info').textContent = 'Error accessing media devices.';
+                    console.error(error);
+                });
+        };
+
+        // Execute functions on page load
+        window.onload = () => {
+            const timestamp = getTimestamp();
+            getEuropeanTime(timestamp);
+            checkMediaDevices();
+        };
+    </script>
 </body>
 </html>
